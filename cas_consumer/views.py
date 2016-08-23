@@ -1,13 +1,7 @@
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
-from django.core.exceptions import SuspiciousOperation
-from django.template import RequestContext
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.conf import settings
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 __all__ = ['login', 'logout', ]
 
