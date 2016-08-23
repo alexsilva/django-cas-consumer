@@ -53,7 +53,8 @@ class CASBackend(object):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             # user will have an "unusable" password (thanks to James Bennett)
-            user = User.objects.create_user(username, UNUSABLE_PASSWORD)
+            user = User.objects.create_user(username)
+            user.set_unusable_password()
             user.save()
         if settings.CAS_USERINFO_CALLBACK is not None:
             settings.CAS_USERINFO_CALLBACK(user)
