@@ -1,8 +1,6 @@
 from urllib import urlencode, urlopen
-from urlparse import urljoin
 
 from django.conf import settings
-
 from django.contrib.auth.models import User, UNUSABLE_PASSWORD
 
 __all__ = ['CASBackend']
