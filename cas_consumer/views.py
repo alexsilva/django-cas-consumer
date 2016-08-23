@@ -1,3 +1,4 @@
+from .utils import get_config
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
@@ -8,11 +9,11 @@ __all__ = ['login', 'logout', ]
 
 service = settings.CAS_SERVICE
 cas_base = settings.CAS_BASE
-cas_login = cas_base + settings.CAS_LOGIN_URL
-cas_validate = cas_base + settings.CAS_VALIDATE_URL
-cas_logout = cas_base + settings.CAS_LOGOUT_URL
-cas_next_default = settings.CAS_NEXT_DEFAULT
-cas_redirect_on_logout = settings.CAS_REDIRECT_ON_LOGOUT
+cas_login = cas_base + get_config('CAS_LOGIN_URL')
+cas_validate = cas_base + get_config('CAS_VALIDATE_URL')
+cas_logout = cas_base + get_config('CAS_LOGOUT_URL')
+cas_next_default = get_config('CAS_NEXT_DEFAULT')
+cas_redirect_on_logout = get_config('CAS_REDIRECT_ON_LOGOUT')
 
 
 def login(request):
@@ -25,11 +26,11 @@ def login(request):
         5. Otherwise, the process fails and displays an error message.
 
     """
-    ticket = request.GET.get(settings.CAS_TICKET_LABEL, None)
+    ticket = request.GET.get(get_config('CAS_TICKET_LABEL'), None)
     next = request.GET.get('next_page', cas_next_default)
     if ticket is None:
-        params = settings.CAS_EXTRA_LOGIN_PARAMS
-        params.update({settings.CAS_SERVICE_LABEL: service})
+        params = get_config('CAS_EXTRA_LOGIN_PARAMS')
+        params.update({get_config('CAS_SERVICE_LABEL'): service})
         url = cas_login + '?' + urlencode(params)
         return HttpResponseRedirect(url)
     user = authenticate(service=service, ticket=ticket)
@@ -50,6 +51,6 @@ def logout(request, next_page=cas_redirect_on_logout):
 
     """
     auth_logout(request)
-    if settings.CAS_COMPLETELY_LOGOUT:
+    if get_config('CAS_COMPLETELY_LOGOUT'):
         return HttpResponseRedirect(cas_logout + '?' + urlencode({'url': next_page}))
     return HttpResponseRedirect(cas_redirect_on_logout)

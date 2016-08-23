@@ -2,6 +2,7 @@ from urllib import urlencode, urlopen
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from .utils import get_config
 
 User = get_user_model()
 
@@ -10,10 +11,10 @@ __all__ = ['CASBackend']
 
 service = settings.CAS_SERVICE
 cas_base = settings.CAS_BASE
-cas_login = cas_base + settings.CAS_LOGIN_URL
-cas_validate = cas_base + settings.CAS_VALIDATE_URL
-cas_logout = cas_base + settings.CAS_LOGOUT_URL
-cas_next_default = settings.CAS_NEXT_DEFAULT
+cas_login = cas_base + get_config('CAS_LOGIN_URL')
+cas_validate = cas_base + get_config('CAS_VALIDATE_URL')
+cas_logout = cas_base + get_config('CAS_LOGOUT_URL')
+cas_next_default = get_config('CAS_NEXT_DEFAULT')
 
 
 def _verify_cas1(ticket, service):
@@ -21,8 +22,11 @@ def _verify_cas1(ticket, service):
 
     Returns username on success and None on failure.
     """
-    params = settings.CAS_EXTRA_VALIDATION_PARAMS
-    params.update({settings.CAS_TICKET_LABEL: ticket, settings.CAS_SERVICE_LABEL: service})
+    params = get_config('CAS_EXTRA_VALIDATION_PARAMS')
+    params.update({
+        get_config('CAS_TICKET_LABEL'): ticket,
+        get_config('CAS_SERVICE_LABEL'): service
+    })
     url = cas_validate + '?' + urlencode(params)
     page = urlopen(url)
     try:
@@ -51,8 +55,9 @@ class CASBackend(object):
             user = User.objects.create_user(username)
             user.set_unusable_password()
             user.save()
-        if settings.CAS_USERINFO_CALLBACK is not None:
-            settings.CAS_USERINFO_CALLBACK(user)
+        callback = get_config('CAS_USERINFO_CALLBACK')
+        if callback is not None:
+            callback(user)
         return user
 
     def get_user(self, user_id):
