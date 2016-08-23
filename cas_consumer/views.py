@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.http import HttpResponseForbidden, HttpResponseRedirect
+from urllib import urlencode
 
 __all__ = ['login', 'logout', ]
 
@@ -29,9 +30,7 @@ def login(request):
     if ticket is None:
         params = settings.CAS_EXTRA_LOGIN_PARAMS
         params.update({settings.CAS_SERVICE_LABEL: service})
-        url = cas_login + '?'
-        raw_params = ['%s=%s' % (key, value) for key, value in params.items()]
-        url += '&'.join(raw_params)
+        url = cas_login + '?' + urlencode(params)
         return HttpResponseRedirect(url)
     user = authenticate(service=service, ticket=ticket)
     if user is not None:
@@ -52,5 +51,5 @@ def logout(request, next_page=cas_redirect_on_logout):
     """
     auth_logout(request)
     if settings.CAS_COMPLETELY_LOGOUT:
-        return HttpResponseRedirect('%s?url=%s' % (cas_logout, next_page))
+        return HttpResponseRedirect(cas_logout + '?' + urlencode({'url': next_page}))
     return HttpResponseRedirect(cas_redirect_on_logout)
