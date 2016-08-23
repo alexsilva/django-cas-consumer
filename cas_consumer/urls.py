@@ -1,8 +1,8 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import include, url
 
-from cas_consumer.views import *
+from .views import *
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^login/', login, name="cas_login"),
     url(r'^logout/', logout, name="cas_logout"),
-)
+]
