@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.conf import settings
 
-__all__ = ['login', 'logout',]
+__all__ = ['login', 'logout', ]
 
 service = settings.CAS_SERVICE
 cas_base = settings.CAS_BASE
@@ -18,6 +18,7 @@ cas_validate = cas_base + settings.CAS_VALIDATE_URL
 cas_logout = cas_base + settings.CAS_LOGOUT_URL
 cas_next_default = settings.CAS_NEXT_DEFAULT
 cas_redirect_on_logout = settings.CAS_REDIRECT_ON_LOGOUT
+
 
 def login(request):
     """ Fairly standard login view.
@@ -42,11 +43,12 @@ def login(request):
     if user is not None:
         auth_login(request, user)
         name = user.first_name or user.username
-        message ="Login succeeded. Welcome, %s." % name
+        message = "Login succeeded. Welcome, %s." % name
         user.message_set.create(message=message)
         return HttpResponseRedirect(next)
     else:
         return HttpResponseForbidden("Error authenticating with CAS")
+
 
 def logout(request, next_page=cas_redirect_on_logout):
     """ Logs the current user out. If *CAS_COMPLETELY_LOGOUT* is true, redirect to the provider's logout page,
