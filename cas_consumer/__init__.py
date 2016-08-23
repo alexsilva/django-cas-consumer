@@ -15,8 +15,7 @@ _DEFAULTS = {
 
     'CAS_LOGIN_URL': 'login/',
     'CAS_VALIDATE_URL': 'validate/',
-    'CAS_LOGOUT_URL': 'logout/',
-    'CAS_URLENCODE_PARAMS': True,
+    'CAS_LOGOUT_URL': 'logout/'
 }
 
 for key, value in _DEFAULTS.iteritems():

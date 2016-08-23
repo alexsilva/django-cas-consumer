@@ -58,7 +58,6 @@ For non-standard CAS implementations, it's sometimes necessary to fudge on a few
 - *CAS_EXTRA_VALIDATION_PARAMS*: Dictionary of extra params that need to be passed to the server on ticket validation.
 - *CAS_LOGIN_URL*: The url, relative to the CAS_BASE, where login requests to the server should be made. Defaults to ``login/`` (notice the lack of a leading slash)
 - *CAS_VALIDATE_URL*: The url, relative to the CAS_BASE, where validation requests to the server should be made. Defaults to ``validate/`` (notice the lack of a leading slash)
-- *CAS_URLENCODE_PARAMS*: Whether or not to use url encoding when making requests to the server. This is to address server implementations that don't properly url encode their data and don't expect url-encoded data. Defaults to ``True`` obviously, as not url-encoding breaks any data with special characters.
 
 CAS_USERINFO_CALLBACK
 =====================

@@ -23,12 +23,7 @@ def _verify_cas1(ticket, service):
     """
     params = settings.CAS_EXTRA_VALIDATION_PARAMS
     params.update({settings.CAS_TICKET_LABEL: ticket, settings.CAS_SERVICE_LABEL: service})
-    url = cas_validate + '?'
-    if settings.CAS_URLENCODE_PARAMS:
-        url += urlencode(params)
-    else:
-        raw_params = ['%s=%s' % (key, value) for key, value in params.items()]
-        url += '&'.join(raw_params)
+    url = cas_validate + '?' + urlencode(params)
     page = urlopen(url)
     try:
         verified = page.readline().strip()
