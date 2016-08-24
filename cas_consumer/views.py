@@ -27,10 +27,10 @@ def login(request):
 
     """
     ticket = request.GET.get(get_config('CAS_TICKET_LABEL'), None)
-    next = request.GET.get('next_page', cas_next_default)
+    next_url = request.GET.get('next', cas_next_default)
     if ticket is None:
         params = get_config('CAS_EXTRA_LOGIN_PARAMS')
-        params.update({get_config('CAS_SERVICE_LABEL'): service})
+        params.update({get_config('CAS_SERVICE_LABEL'): service + '?' + urlencode({'next': next_url})})
         url = cas_login + '?' + urlencode(params)
         return HttpResponseRedirect(url)
     user = authenticate(service=service, ticket=ticket)
@@ -40,7 +40,7 @@ def login(request):
             name = user.first_name or user.username
             message = "Login succeeded. Welcome, %s." % name
             user.message_set.create(message=message)
-        return HttpResponseRedirect(next)
+        return HttpResponseRedirect(next_url)
     else:
         return HttpResponseForbidden("Error authenticating with CAS")
 
